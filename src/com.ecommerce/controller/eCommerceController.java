@@ -28,7 +28,7 @@ public class eCommerceController {
 
             switch(choice){
                 case 1:
-                    System.out.println("Registering");
+                    createAccount();
                     break;
                 case 2:
                     System.out.println("Logging In");
@@ -40,4 +40,49 @@ public class eCommerceController {
 
         }while(choice != 3);
     }
+
+    public static void createAccount(){
+        String user_id;
+        String password;
+        String confirmPassword;
+        String first_name;
+        String last_name;
+        String email;
+        String phone;
+        String address;
+        boolean registered = false;
+
+        do {
+            Scanner input = new Scanner(System.in);
+
+            System.out.println("Registering a new account");
+            System.out.println();
+            System.out.println("First Name: ");
+                first_name = input.nextLine();
+            System.out.println("Last Name: ");
+                last_name = input.nextLine();
+            System.out.println("Email: ");
+                email = input.nextLine();
+            System.out.println("Phone: ");
+                phone = input.nextLine();
+            System.out.println("Address: ");
+                address = input.nextLine();
+            System.out.println("Username: ");
+                user_id = input.nextLine();
+            System.out.println("Password: ");
+                password = input.nextLine();
+            System.out.println("Confirm Password: ");
+                confirmPassword = input.nextLine();
+
+            //ToDo: Also check if user already exists
+            if(!confirmPassword.equals(password)){
+                System.out.println("Passwords do not match. Please try again.");
+            }else{
+                System.out.println("Successfully registered");
+                registered = true;
+            }
+
+        }while(!registered);
+    }
+
 }
