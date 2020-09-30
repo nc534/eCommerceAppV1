@@ -105,7 +105,7 @@ public class eCommerceController {
             user_id=input.nextLine();
             System.out.println("Password: ");
             password=input.nextLine();
-            System.out.println("Enter -1 to go back to main menu.");
+
     }
 
 }

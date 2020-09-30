@@ -2,6 +2,7 @@ package com.ecommerce.model;
 
 public class Product {
     private int product_code;
+    private static int productCounter = 0;
     private String product_name;
     private double price;
 
@@ -9,18 +10,14 @@ public class Product {
 
     }
 
-    public Product(int product_code, String product_name, double price) {
-        this.product_code = product_code;
+    public Product(String product_name, double price) {
+        this.product_code = productCounter++;
         this.product_name = product_name;
         this.price = price;
     }
 
     public int getProduct_code() {
         return product_code;
-    }
-
-    public void setProduct_code(int product_code) {
-        this.product_code = product_code;
     }
 
     public String getProduct_name() {
