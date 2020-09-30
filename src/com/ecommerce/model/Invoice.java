@@ -1,28 +1,33 @@
 package com.ecommerce.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Invoice {
     private final int invoice_number;
     private static int invoiceCounter = 0;
+    private final Customer customer;
     private final LocalDateTime purchase_date;
     private List<Product> purchaseList;
     private double total;
 
-    public Invoice(List<Product> purchaseList) {
+    public Invoice(Customer customer, List<Product> purchaseList) {
+        this.customer = customer;
         this.invoice_number = invoiceCounter++;
         this.purchase_date = LocalDateTime.now();
         this.purchaseList = purchaseList;
         this.total = addTotal();
     }
 
-    public int getInvoice_number() {
+    public String getCustomerName() {
+        return customer.getName();
+    }
+
+    public int getInvoiceNumber() {
         return invoice_number;
     }
 
-    public LocalDateTime getPurchase_date() {
+    public LocalDateTime getPurchaseDate() {
         return purchase_date;
     }
 

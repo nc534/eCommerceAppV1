@@ -3,8 +3,7 @@ package com.ecommerce.model;
 public class Customer {
     private String user_id;
     private String password;
-    private String first_name;
-    private String last_name;
+    private String name;
     private String email;
     private String phone;
     private String address;
@@ -13,11 +12,10 @@ public class Customer {
 
     }
 
-    public Customer(String user_id, String password, String first_name, String last_name, String email, String phone, String address) {
+    public Customer(String user_id, String password, String name, String email, String phone, String address) {
         this.user_id = user_id;
         this.password = password;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.name = name;
         this.email = email;
         this.phone = phone;
         this.address = address;
@@ -39,20 +37,12 @@ public class Customer {
         this.password = password;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getName() {
+        return name;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setName(String first_name) {
+        this.name = name;
     }
 
     public String getEmail() {
