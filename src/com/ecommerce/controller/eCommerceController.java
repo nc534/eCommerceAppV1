@@ -1,6 +1,10 @@
 package com.ecommerce.controller;
 
-import java.sql.SQLOutput;
+import com.ecommerce.data.InitialData;
+import com.ecommerce.model.Customer;
+import com.ecommerce.model.Product;
+import com.ecommerce.service.eCommerceService;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -10,6 +14,9 @@ public class eCommerceController {
         System.out.println("Welcome!");
 
         int choice = 0;
+
+        InitialData initialData = new InitialData();
+        initialData.generateInitialData();
 
         do {
             Scanner input = new Scanner(System.in);
@@ -47,8 +54,7 @@ public class eCommerceController {
         String user_id;
         String password;
         String confirmPassword;
-        String first_name;
-        String last_name;
+        String name;
         String email;
         String phone;
         String address;
@@ -60,10 +66,8 @@ public class eCommerceController {
             Scanner input = new Scanner(System.in);
 
             System.out.println();
-            System.out.println("First Name: ");
-                first_name = input.nextLine();
-            System.out.println("Last Name: ");
-                last_name = input.nextLine();
+            System.out.println("Name: ");
+                name = input.nextLine();
             System.out.println("Email: ");
                 email = input.nextLine();
             System.out.println("Phone: ");
