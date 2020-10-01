@@ -62,32 +62,35 @@ public class eCommerceController {
 
         System.out.println("Registering a new account");
 
+        //ToDo: implement a way to exit registration
         do {
             Scanner input = new Scanner(System.in);
 
             System.out.println();
             System.out.println("Name: ");
-                name = input.nextLine();
+            name = input.nextLine();
             System.out.println("Email: ");
-                email = input.nextLine();
+            email = input.nextLine();
             System.out.println("Phone: ");
-                phone = input.nextLine();
+            phone = input.nextLine();
             System.out.println("Address: ");
-                address = input.nextLine();
+            address = input.nextLine();
             System.out.println("Username: ");
-                user_id = input.nextLine();
+            user_id = input.nextLine();
             System.out.println("Password: ");
-                password = input.nextLine();
+            password = input.nextLine();
             System.out.println("Confirm Password: ");
-                confirmPassword = input.nextLine();
+            confirmPassword = input.nextLine();
 
-            //ToDo: Also check if user already exists
-            if(!confirmPassword.equals(password)){
+            if(eCommerceService.loginCheck().containsKey(user_id)) {
+                System.out.println("Username already exists.");
+            }else if(!confirmPassword.equals(password)){
                 System.out.println("Passwords do not match. Please try again.");
             }else{
-                System.out.println("Successfully registered");
+                Customer newCustomer = new Customer(user_id, password, name, email, phone, address);
+                eCommerceService.addCustomer(newCustomer);
+                System.out.println("Successfully registered!");
                 registered = true;
-                input.close();
             }
 
         }while(!registered);
@@ -103,7 +106,6 @@ public class eCommerceController {
 
         Scanner input = new Scanner(System.in);
 
-        //ToDo: implement loop to allow re-enter and exiting from login to main menu
             System.out.println();
             System.out.println("Username: ");
             user_id=input.nextLine();
@@ -111,12 +113,11 @@ public class eCommerceController {
             password=input.nextLine();
 
             if(eCommerceService.loginCheck().containsKey(user_id)){
-                System.out.println("Username exists!");
 
                 if(password.equals(eCommerceService.loginCheck().get(user_id))){
-                    System.out.println("Password matches");
+                    System.out.println("Successfully logged in!");
                 }else{
-                    System.out.println("Password does not match");
+                    System.out.println("Username and Password do not match");
                 }
 
             }else{
