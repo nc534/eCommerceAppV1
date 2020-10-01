@@ -110,6 +110,18 @@ public class eCommerceController {
             System.out.println("Password: ");
             password=input.nextLine();
 
+            if(eCommerceService.loginCheck().containsKey(user_id)){
+                System.out.println("Username exists!");
+
+                if(password.equals(eCommerceService.loginCheck().get(user_id))){
+                    System.out.println("Password matches");
+                }else{
+                    System.out.println("Password does not match");
+                }
+
+            }else{
+                System.out.println("Username does not exist!");
+            }
     }
 
 }
