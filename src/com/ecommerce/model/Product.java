@@ -11,7 +11,7 @@ public class Product {
     }
 
     public Product(String product_name, double price) {
-        this.product_code = productCounter++;
+        this.product_code = ++productCounter;
         this.product_name = product_name;
         this.price = price;
     }

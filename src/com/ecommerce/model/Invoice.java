@@ -13,14 +13,14 @@ public class Invoice {
 
     public Invoice(Customer customer, List<Product> purchaseList) {
         this.customer = customer;
-        this.invoice_number = invoiceCounter++;
+        this.invoice_number = ++invoiceCounter;
         this.purchase_date = LocalDateTime.now();
         this.purchaseList = purchaseList;
         this.total = addTotal();
     }
 
-    public String getCustomerName() {
-        return customer.getName();
+    public Customer getCustomer() {
+        return customer;
     }
 
     public int getInvoiceNumber() {
@@ -33,6 +33,10 @@ public class Invoice {
 
     public List<Product> getPurchaseList() {
         return purchaseList;
+    }
+
+    public void setPurchaseList(List<Product> purchaseList) {
+        this.purchaseList = purchaseList;
     }
 
     public double addTotal(){

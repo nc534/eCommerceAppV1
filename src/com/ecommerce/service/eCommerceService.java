@@ -20,8 +20,7 @@ public class eCommerceService {
     }
 
     public static Customer getCustomerByUsername(String username) {
-        Customer customer = customerList.stream().filter(c -> c.getUserId().equals(username)).findAny().orElse(null);
-        return customer;
+        return customerList.stream().filter(c -> c.getUserId().equals(username)).findAny().orElse(null);
     }
 
     public static Map<String, String> loginCheck() {
@@ -55,6 +54,10 @@ public class eCommerceService {
         return purchaseList;
     }
 
+    public static void clearPurchaseList() {
+        purchaseList.clear();
+    }
+
     public static Product getProductByCode(int code) {
         Product product;
 
@@ -72,8 +75,7 @@ public class eCommerceService {
     }
 
     public static Invoice getInvoiceByNumber(int number) {
-        Invoice invoice = (Invoice) invoiceList.stream().filter(i -> i.getInvoiceNumber() == number).findAny().orElse(null);
-        return invoice;
+        return invoiceList.stream().filter(i -> i.getInvoiceNumber() == number).findAny().orElse(null);
     }
 
 }

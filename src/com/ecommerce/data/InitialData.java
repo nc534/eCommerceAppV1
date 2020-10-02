@@ -36,6 +36,7 @@ public class InitialData {
             purchaseList.add(p7);
 
         Invoice newInvoice = new Invoice(newCustomer, purchaseList);
+        eCommerceService.addInvoice(newInvoice);
 
     }
 }

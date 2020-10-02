@@ -8,10 +8,9 @@ import com.ecommerce.service.eCommerceService;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class eCommerceController {
 
@@ -138,7 +137,7 @@ public class eCommerceController {
 
     public static void loggedMenu(Customer customer) {
 
-        int choice = 0;
+        int choice;
         do {
 
             Scanner input = new Scanner(System.in);
@@ -155,7 +154,7 @@ public class eCommerceController {
 
             System.out.println();
             System.out.println("1. Purchase Item(s)");
-            System.out.println("2. Return item");
+            System.out.println("2. Return Item(s)");
             System.out.println("3. Log Out");
 
             choice = input.nextInt();
@@ -163,7 +162,7 @@ public class eCommerceController {
             if(choice == 1){
                 purchase(customer);
             }else if(choice == 2){
-                returns();
+                returns(customer);
             }else if(choice < 1 || choice > 3){
                 System.out.println("Not a valid choice. Please input a valid option.");
                 choice = input.nextInt();
@@ -180,6 +179,7 @@ public class eCommerceController {
         System.out.println("Enter the code(s) of what you want to purchase separated by , (i.e. 1,3,5)");
         purchaseCodes = input.next();
 
+        eCommerceService.clearPurchaseList();
         purchaseList = eCommerceService.purchaseList(purchaseCodes);
 
         for(Product p : purchaseList){
@@ -193,6 +193,7 @@ public class eCommerceController {
 
         if(confirm.toUpperCase().equals("Y")){
             Invoice newInvoice = new Invoice(customer, purchaseList);
+
             eCommerceService.addInvoice(newInvoice);
 
             System.out.println();
@@ -201,28 +202,87 @@ public class eCommerceController {
 
             Invoice invoice = eCommerceService.getInvoiceByNumber(newInvoice.getInvoiceNumber());
             showInvoice(invoice);
-
-            purchaseList.clear();
         }else if(confirm.toUpperCase().equals("N")){
             purchaseList.clear();
         }
 
     }
 
-    public static void returns() {
+    public static void returns(Customer customer) {
+        Scanner input = new Scanner(System.in);
+        int invoiceNumber;
+        System.out.println("Enter invoice number: ");
+        invoiceNumber = input.nextInt();
 
+        Invoice invoice = eCommerceService.getInvoiceByNumber(invoiceNumber);
+
+        if (invoice == null) {
+            System.out.println("Invoice was not found.");
+        }else if (!invoice.getCustomer().getName().equals(customer.getName())) {
+            System.out.println("Invoice was not found.");
+        }else if(LocalDateTime.now().isAfter(invoice.getPurchaseDate().plusDays(15))) {
+            System.out.println("You cannot return items purchased over 15 days from purchase date.");
+        }else{
+            showInvoice(invoice);
+
+            System.out.println();
+
+            List<Product> newPurchaseList = invoice.getPurchaseList();
+            List<Product> returnList = new ArrayList<>();
+            HashSet<Integer> purchaseCodes = new HashSet<>();
+
+            for(Product p : newPurchaseList) {
+                purchaseCodes.add(p.getProductCode());
+            }
+
+            int code;
+            double reimbursement = 0;
+
+            do {
+            System.out.println("Enter the product code of the item you want to return: (0 to end)");
+
+            code = input.nextInt();
+
+                if(!purchaseCodes.contains(code)) {
+                    System.out.println("You cannot return something that was not bought.");
+                }else{
+                    Product removeProduct = eCommerceService.getProductByCode(code);
+                    reimbursement += removeProduct.getPrice();
+                    newPurchaseList.remove(removeProduct);
+                    returnList.add(removeProduct);
+
+                    invoice.setPurchaseList(newPurchaseList);
+                }
+
+            }while(code != 0 && newPurchaseList.size()!=0);
+
+            System.out.println("Returning these items:");
+            System.out.println();
+
+            for(Product p : returnList) {
+                System.out.println(p.getProductName() + "    $" + p.getPrice());
+            }
+
+            System.out.println();
+            System.out.println("$" + reimbursement + " will be mailed to the address " + invoice.getCustomer().getAddress() +
+                                " and details will be sent to your email: " + invoice.getCustomer().getEmail() + " and phone: "
+                                + invoice.getCustomer().getPhone());
+        }
     }
 
     public static void showInvoice(Invoice invoice) {
 
         String datetime = invoice.getPurchaseDate().format(dateTimeFormatter);
-        System.out.println("Customer Name: " + invoice.getCustomerName() + "    " + "Date: " + datetime);
+        System.out.println("Customer Name: " + invoice.getCustomer().getName() + "    " + "Date: " + datetime);
         System.out.println("Invoice Number: " + invoice.getInvoiceNumber());
+
+        System.out.println(invoice.getPurchaseList().isEmpty());
         for(Product p : invoice.getPurchaseList()){
             formatPrice = formatter.format(p.getPrice());
             String purchase = String.format("   %-3d  %-10s  $%-5s  ", p.getProductCode(), p.getProductName(), formatPrice);
             System.out.println(purchase);
         }
+
         System.out.println();
         NumberFormat totalFormatter = new DecimalFormat("000.00");
         formatPrice = totalFormatter.format(invoice.getTotal());
