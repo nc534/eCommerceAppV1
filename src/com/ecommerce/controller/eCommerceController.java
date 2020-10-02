@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class eCommerceController {
 
@@ -107,8 +108,6 @@ public class eCommerceController {
     public static void login(){
         String user_id;
         String password;
-        boolean exists;
-        int exit = 0;
 
         System.out.println("Login");
 
@@ -124,6 +123,11 @@ public class eCommerceController {
 
                 if(password.equals(eCommerceService.loginCheck().get(user_id))){
                     System.out.println("Successfully logged in!");
+                    try {
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     loggedMenu(eCommerceService.getCustomerByUsername(user_id));
 
                 }else{
@@ -135,7 +139,7 @@ public class eCommerceController {
             }
     }
 
-    public static void loggedMenu(Customer customer) {
+    public static void loggedMenu(Customer customer){
 
         int choice;
         do {
@@ -202,6 +206,8 @@ public class eCommerceController {
 
             Invoice invoice = eCommerceService.getInvoiceByNumber(newInvoice.getInvoiceNumber());
             showInvoice(invoice);
+            System.out.println();
+            promptEnterKey();
         }else if(confirm.toUpperCase().equals("N")){
             purchaseList.clear();
         }
@@ -218,10 +224,25 @@ public class eCommerceController {
 
         if (invoice == null) {
             System.out.println("Invoice was not found.");
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }else if (!invoice.getCustomer().getName().equals(customer.getName())) {
             System.out.println("Invoice was not found.");
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }else if(LocalDateTime.now().isAfter(invoice.getPurchaseDate().plusDays(15))) {
             System.out.println("You cannot return items purchased over 15 days from purchase date.");
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }else{
             showInvoice(invoice);
 
@@ -243,8 +264,13 @@ public class eCommerceController {
 
             code = input.nextInt();
 
-                if(!purchaseCodes.contains(code)) {
+                if(!purchaseCodes.contains(code) && code != 0) {
                     System.out.println("You cannot return something that was not bought.");
+                    try {
+                        TimeUnit.SECONDS.sleep(3);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }else{
                     Product removeProduct = eCommerceService.getProductByCode(code);
                     reimbursement += removeProduct.getPrice();
@@ -267,6 +293,9 @@ public class eCommerceController {
             System.out.println("$" + reimbursement + " will be mailed to the address " + invoice.getCustomer().getAddress() +
                                 " and details will be sent to your email: " + invoice.getCustomer().getEmail() + " and phone: "
                                 + invoice.getCustomer().getPhone());
+
+            System.out.println();
+            promptEnterKey();
         }
     }
 
@@ -276,7 +305,6 @@ public class eCommerceController {
         System.out.println("Customer Name: " + invoice.getCustomer().getName() + "    " + "Date: " + datetime);
         System.out.println("Invoice Number: " + invoice.getInvoiceNumber());
 
-        System.out.println(invoice.getPurchaseList().isEmpty());
         for(Product p : invoice.getPurchaseList()){
             formatPrice = formatter.format(p.getPrice());
             String purchase = String.format("   %-3d  %-10s  $%-5s  ", p.getProductCode(), p.getProductName(), formatPrice);
@@ -287,6 +315,12 @@ public class eCommerceController {
         NumberFormat totalFormatter = new DecimalFormat("000.00");
         formatPrice = totalFormatter.format(invoice.getTotal());
         System.out.println("Total: $" + formatPrice);
+    }
+
+    public static void promptEnterKey(){
+        System.out.println("Press a key to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 
 }
